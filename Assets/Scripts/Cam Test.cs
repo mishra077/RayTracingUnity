@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
+
+using DebugUnity = UnityEngine.Debug;
 
 public class CamTest : MonoBehaviour
 {
@@ -14,6 +17,10 @@ public class CamTest : MonoBehaviour
     public Color pointColor = Color.white;
     private bool cameraParametersChanged = true; // Flag to indicate camera parameter changes
     private List<GameObject> debugPoints = new List<GameObject>();
+
+    public GameObject arrowPrefab; // Assign the arrow prefab in the Inspector
+    public float cylinderScaleMultiplier = 1.0f; // Adjust the scaling factor
+    public Vector3 scaleChange;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +49,11 @@ public class CamTest : MonoBehaviour
         newPoint.transform.parent = parent; // Attach the sphere to the camera
 
         debugPoints.Add(newPoint);
+    }
+
+    void DrawLineFromCamera(Transform camT, Vector3 dir, Vector3 point)
+    {
+        CreateArrows(camT.position, dir, point);
     }
 
     void CameraRayTest()
@@ -76,10 +88,34 @@ public class CamTest : MonoBehaviour
                 Vector3 pointLocal = bottomLeftLocal + new Vector3(planeWidth * tx, planeHeight * ty, 0.01f);
                 Vector3 point = camT.position + camT.right * pointLocal.x + camT.up * pointLocal.y + camT.forward * pointLocal.z;
 
+                Vector3 dir = (point - camT.position).normalized;
+
                 //Visualize
                 DrawPoint(point, camT);
+                DrawLineFromCamera(camT, dir, point);
             }
         }
+
+        
+    }
+
+    void CreateArrows(Vector3 cameraPos, Vector3 dir, Vector3 point)
+    {
+        Camera cam = Camera.main;
+        Transform camT = cam.transform;
+
+        // Calculate the position of the arrow's tip
+        Vector3 tipPosition = cameraPos;
+
+        // Instantiate the arrow prefab
+        GameObject arrow = Instantiate(arrowPrefab, cameraPos, Quaternion.identity);
+        float distance = Vector3.Distance(cameraPos, point);
+        Vector3 offset = cameraPos + dir * distance;
+        //arrow.transform.LookAt(point); // Point the arrow in the direction
+        //arrow.transform.fr
+        arrow.transform.rotation = Quaternion.FromToRotation(Vector3.up, dir);
+        arrow.transform.localScale -= scaleChange;
+
     }
 
     // Update is called once per frame
@@ -91,6 +127,12 @@ public class CamTest : MonoBehaviour
             cameraParametersChanged = false; // Reset the flag
         }
     }
+
+    /*void OnPostRender()
+    {
+        DrawLineFromCamera();
+        DebugUnity.Log("Hello World");
+    }*/
 }
 
 

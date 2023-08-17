@@ -487,7 +487,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 1000
-  field of view: 43.5
+  field of view: 73.4
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -533,8 +533,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugPointCount: {x: 16, y: 8}
-  debugPointRadius: 0.025
+  debugPointRadius: 1.42
   pointColor: {r: 1, g: 1, b: 1, a: 1}
+  arrowPrefab: {fileID: 555088448169053259, guid: b0349b79862cd574cb416cdfb5157ac2, type: 3}
+  cylinderScaleMultiplier: 1
+  scaleChange: {x: 0, y: 0, z: 0}
 --- !u!1 &1105931628
 GameObject:
   m_ObjectHideFlags: 0
